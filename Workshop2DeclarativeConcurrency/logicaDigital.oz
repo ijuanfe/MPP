@@ -60,8 +60,8 @@ end
 
 
 % Punto 6.d.
-
 declare SumadorCompleto
+
 proc {SumadorCompleto InputCS ?ResultC ?ResultS}
    proc {SumadorCompletoAux Cg Sg InputCS ?ResultCa ?ResultSa}
       thread ?ResultCa = {Simulate Cg InputCS} end
