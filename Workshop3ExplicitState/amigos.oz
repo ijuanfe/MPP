@@ -5,6 +5,7 @@ declare PagoDeuda
 % Función para construir matriz que representa el grafo de las amistades
 fun {PagoDeuda Amistades Deudas}
    
+   % 1. Definiendo estructura de datos para amistades -------------------------------------------------------------- Inicio %
    % Inizializar todas las amistades de la matriz (grafo) en false
    LenDeudas = {Length Deudas} % Tamaño de la matriz (grafo): [LenDeudas]x[LenDeudas]
    MatrizAmistades = {Array.new 1 LenDeudas nil}
@@ -20,7 +21,9 @@ fun {PagoDeuda Amistades Deudas}
    for I in 1..LenAmistades do
       MatrizAmistades.(DictAmistades.I.1).(DictAmistades.I.2) := true
    end
-   
+   % 1. Definiendo estructura de datos para amistades --------------------------------------------------------------- Final %
+
+   % Variables auxiliares
    Resultado = {NewCell 0}       % Celda para sumar los grupos de amistades
    FlagTrue = {NewCell false}    % Celda para verificar la solución del problema
    FlagFalse = {NewCell false}   % Celda para verificar la solución del problema
@@ -32,9 +35,10 @@ fun {PagoDeuda Amistades Deudas}
    % Diccionario de grupos de amigos (para ser usado luego de calcular la clausura transitiva del grafo de amigos)
    GruposAmigosDict = {Dictionary.new}
    {Dictionary.put GruposAmigosDict 1 nil}
-   
+
+   % 2. Grupo de amigos con amistades ------------------------------------------------------------------------------ Inicio %
    % Procedimiento que construye la clausura transitiva del grafo (matriz) de las amistades
-   proc {StateTrans Grafo}
+   proc {ClauTrans Grafo}
       for K in 1..LenDeudas do
 	 for I in 1..LenDeudas do
 	    if Grafo.I.K then
@@ -47,14 +51,14 @@ fun {PagoDeuda Amistades Deudas}
    end
    
    % Procedimiento que imprimir la matriz (Grafo) de amistades
-   proc {ShowGraph Grafo}
-      for I in 1..LenDeudas do
-	 for J in 1..LenDeudas do
-	    {Show I#J#Grafo.I.J}
-	    {Delay 500}
-	 end
-      end
-   end
+   %proc {ShowGraph Grafo}
+   %   for I in 1..LenDeudas do
+	% for J in 1..LenDeudas do
+	 %   {Show I#J#Grafo.I.J}
+	  %  {Delay 500}
+	 %end
+      %end
+   %end
    
    % Procedimiento para construir un diccionario que contiene los grupos de las amistades que se pueden transferir dinero
    proc {GruposAmigos Grafo Diccionario}
@@ -96,7 +100,9 @@ fun {PagoDeuda Amistades Deudas}
 	 AgregarAmigo := false
       else skip skip end
    end
-   
+   % 2. Grupo de amigos con amistades ------------------------------------------------------------------------------- Final %
+
+   % 3. Verificar pago de deudas de los grupos de amigos con amistades --------------------------------------------- Inicio %
    % Procedimiento para verificar si se puede cumplir los pagos para un respectivo grupo de amigos
    proc {VerificarPagoDeudas Diccionario Deudas}
       for I in 1..{Length {Dictionary.entries Diccionario}} do  % Recorrer el diccionario de los grupos de amistades final
@@ -120,8 +126,9 @@ fun {PagoDeuda Amistades Deudas}
 	 {SumList LT I+LH}
       end
    end
+   % 3. Verificar pago de deudas de los grupos de amigos con amistades ---------------------------------------------- Final %
 in
-   {StateTrans MatrizAmistades} % Crear clausura transitiva del grafo de amistades
+   {ClauTrans MatrizAmistades}  % Actualizar grafo (matriz) de amistades con su clausura transitiva
    %{ShowGraph MatrizAmistades}  % Imprimir grafo de amistades
    {GruposAmigos MatrizAmistades GruposAmigosDict}
    {VerificarPagoDeudas GruposAmigosDict ArrayDeudas}
