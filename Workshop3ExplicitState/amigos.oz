@@ -22,7 +22,7 @@ fun {PagoDeuda Amistades Deudas}
       MatrizAmistades.(DictAmistades.I.1).(DictAmistades.I.2) := true
    end
    % 1. Definiendo estructura de datos para amistades --------------------------------------------------------------- Final %
-
+   
    % Variables auxiliares
    Resultado = {NewCell 0}       % Celda para sumar los grupos de amistades
    FlagTrue = {NewCell false}    % Celda para verificar la solución del problema
@@ -35,7 +35,7 @@ fun {PagoDeuda Amistades Deudas}
    % Diccionario de grupos de amigos (para ser usado luego de calcular la clausura transitiva del grafo de amigos)
    GruposAmigosDict = {Dictionary.new}
    {Dictionary.put GruposAmigosDict 1 nil}
-
+   
    % 2. Grupo de amigos con amistades ------------------------------------------------------------------------------ Inicio %
    % Procedimiento que construye la clausura transitiva del grafo (matriz) de las amistades
    proc {ClauTrans Grafo}
@@ -50,23 +50,13 @@ fun {PagoDeuda Amistades Deudas}
       end
    end
    
-   % Procedimiento que imprimir la matriz (Grafo) de amistades
-   %proc {ShowGraph Grafo}
-   %   for I in 1..LenDeudas do
-	% for J in 1..LenDeudas do
-	 %   {Show I#J#Grafo.I.J}
-	  %  {Delay 500}
-	 %end
-      %end
-   %end
-   
    % Procedimiento para construir un diccionario que contiene los grupos de las amistades que se pueden transferir dinero
    proc {GruposAmigos Grafo Diccionario}
       for I in 1..LenDeudas do
 	 for J in 1..LenDeudas do
-	    if Grafo.I.J then % Evaluar sólo las amistades existentes (pareja I#J == true)
-	       for K in 1..{Length {Dictionary.entries Diccionario}} do              % Recorrer el diccionario de los grupos de amigos actual
-		  if @AgregarAmigo == true then % Si ya fue agregada la pareja actual I#J al grupo, entonces no evaluar más hasta la otra pareja
+	    if Grafo.I.J then                                           % Evaluar sólo las amistades existentes (pareja I#J == true)
+	       for K in 1..{Length {Dictionary.entries Diccionario}} do % Recorrer el diccionario de los grupos de amigos actual
+		  if @AgregarAmigo == true then                         % Si ya fue agregada la pareja actual I#J al grupo, entonces no evaluar más hasta la otra pareja
 		     {EvaluarGrupo {Dictionary.get Diccionario K} Diccionario I J K}
 		  end
 	       end
@@ -111,7 +101,7 @@ fun {PagoDeuda Amistades Deudas}
 	 end
 	 if @Resultado == 0 then
 	    FlagTrue := true
-	    Resultado := 0 % Reiniciar resultado para otra iteración
+	    Resultado := 0    % Reiniciar resultado para otra iteración
 	 else
 	    FlagFalse := true % Si al menos la suma de un grupo es diferente de 0, no se pueden pagar
 	    Resultado := 0
@@ -128,14 +118,14 @@ fun {PagoDeuda Amistades Deudas}
    end
    % 3. Verificar pago de deudas de los grupos de amigos con amistades ---------------------------------------------- Final %
 in
-   {ClauTrans MatrizAmistades}  % Actualizar grafo (matriz) de amistades con su clausura transitiva
-   %{ShowGraph MatrizAmistades}  % Imprimir grafo de amistades
+   {ClauTrans MatrizAmistades}
    {GruposAmigos MatrizAmistades GruposAmigosDict}
    {VerificarPagoDeudas GruposAmigosDict ArrayDeudas}
    if @FlagFalse then false
    else @FlagTrue end
 end
 
+
+% Pruebas:
 {Browse {PagoDeuda [1#2 2#3 4#5] [100 ~75 ~25 ~42 42]}}
 {Browse {PagoDeuda [1#3 2#4] [15 20 ~10 ~25]}}
-{Browse {PagoDeuda [1#3 3#5 4#2 2#6 5#7] [~23 60 108 ~20 ~100 ~40 15]}}
