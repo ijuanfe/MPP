@@ -6,7 +6,7 @@ declare Expresion
 
 % Los métodos de la superclase Expresion (inic y evaluar) serán
 % anulados (overrides) por todas las clases que heredan de ella
-class Expresion          % Superclase
+class Expresion          % Superclase: también es una clase abstracta, sus métodos no están definidos
    attr res              % Toda expresión tiene un resultado que la representa
    meth inic skip end    % Toda clase (y también expresión) tiene un método inicializador
    meth evaluar skip end % Toda expresión tiene un método para poder ser evaluado su resultado
